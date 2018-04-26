@@ -1,9 +1,10 @@
 module P03() where
 
-
+import Debug.Trace
 -- improving on saddleback search
 
 -- f :: (Int,Int) => Int
+f1 :: (Int,Int) -> Int
 f1 (x,y) = x^2 + y^3
 
 -- (z+1)^2 evaluation of
@@ -39,8 +40,8 @@ find3 (u,v) f z
 -- ok, sorted, could be done by binary search:
 bsearch g l r z
        | l + 1 == r = l
-       | g m <= z = bsearch g l m z
-       | otherwise = bsearch g m r z
+       | g m <= z = bsearch g m r z
+       | otherwise = bsearch g l m z
          where
            m = (l + r) `div` 2
 
@@ -69,3 +70,26 @@ find (u,v) f z
 -- exercise, it's easy to impl. them without any proof
 
 -- =================================================================
+-- now bsearch
+-- FIXME: do bsearch && saddleback on your own later
+
+-- find' :: (Int, Int) -> (Int, Int) -> ((Int, Int) -> Int) -> Int -> [(Int, Int)]
+find' (u,v) (r,s) f z
+  | u > r || v < s = []
+  | v - s <= r - u = rfind (bsearch (\x -> f (x,q)) (u-1) (r+1) z)
+  | otherwise      = cfind ( bsearch (\y -> f (p,y)) (s-1) (v+1) z)
+  where
+  p = (u+r) `div` 2
+  q = (v+s) `div` 2
+  rfind p = trace ("rfind " ++ show (p,q)) $ (if f (p,q) == z then (p,q): find' (u,v) (p-1, q+1) f z
+                           else find' (u,v) (p, q+1) f z) ++
+             find' (p+1, q-1) (r,s) f z
+  cfind q = trace ("cfind " ++ show (p,q)) $ (find' (u,v) (p-1,q+1) f z) ++
+            (if f (p,q) == z then (p,q): find' (p+1, q-1) (r,s) f z
+                           else find' (p+1,q) (r,s) f z)
+
+-- invert' ::  ( (Int, Int) -> Int) -> Int -> [(Int, Int)]
+invert' f z = find' (0,m) (n,0) f z
+  where
+    m = bsearch (\y -> f (0,y)) (negate 1) (z+1) z
+    n = bsearch (\x -> f (x,0)) (negate 1) (z+1) z

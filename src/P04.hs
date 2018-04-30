@@ -1,5 +1,6 @@
 module P04() where
 
+import Data.List
 import Data.Vector(Vector)
 import qualified Data.Vector as V
 import Debug.Trace
@@ -22,3 +23,15 @@ kthsmallest leftA leftB k _A _B =
     leftA' = leftA + z
     leftB' = leftB + z
     k' = max 1 (k - z - 1)
+
+----------------------- all right -------------
+
+smallest :: Ord a => Int -> ([a], [a]) -> a
+smallest k (xs,ys) = union' (xs,ys) !! k
+
+union' :: Ord a => ([a], [a]) -> [a]
+union' (xs, []) = xs
+union' ([], ys) = ys
+union' (x:xs, y:ys)
+         | x < y = x : union' (xs, y:ys)
+         | x > y = y : union' (x:xs, ys)

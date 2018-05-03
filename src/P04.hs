@@ -51,13 +51,28 @@ smallest' k (zs,ws) =
     (xs, a:ys) = splitAt p zs
     (us, b:vs) = splitAt q ws
 
--- FIXME: buuuuuuuuuggggggggggssssssssssss
+
+search'' :: Ord a => Int -> (Int, Int) -> (Int, Int) -> (Vector a, Vector a) -> a
+search'' k (lx, rx) (ly, ry) (xa,ya)
+   | ly == ry = xa V.! (lx + k)
+   | lx == rx = ya V.! (ly + k)
+   | otherwise =
+     case (xa V.! mx < ya V.! my, k <= (mx - lx) + (my - ly)) of
+       (True, True) -> search'' k (lx, rx) (ly, my) (xa, ya)
+       (True, False) -> search'' (k - (mx - lx) - 1) (mx+1, rx) (ly,ry) (xa, ya)
+       (False, True) -> search'' k (lx, mx) (ly, ry) (xa, ya)
+       (False, False) -> search'' (k - (my - ly) - 1) (lx, rx) (my+1,ry) (xa, ya)
+    where
+      mx = (lx + rx) `div` 2 
+      my = (ly + ry) `div` 2
+
+
+-- BBBBBBBBBBBBBBBBBIIIIAAATCHHHH!!!
 search' :: Ord a => Int -> (Int, Int) -> (Int, Int) -> (Vector a, Vector a) -> a
 search' k (lx, rx) (ly, ry) (xa,ya)
    | lx == rx = ya V.! k
    | ly == ry = xa V.! k
    | otherwise =
-    trace (">" ++ show k ++ " " ++ show lx ++ " " ++ show rx ++ " " ++ show ly ++ " " ++ show ry)   $
     case (xa V.! mx < ya V.! my, k <= (mx + my)) of
       (True, True) -> search' k (lx, rx) (ly, my) (xa,ya)
       (True, False) -> search' (k - mx - 1) (mx, rx) (ly, ry) (xa,ya)
@@ -67,8 +82,9 @@ search' k (lx, rx) (ly, ry) (xa,ya)
       mx = (lx + rx) `div` 2
       my = (ly + ry) `div` 2
 
-smallest'' :: Ord a => Int -> (Vector a, Vector a) -> a
-smallest'' k (xa, ya) = search' k (0, m) (0, n) (xa, ya)
+-- FIXME: do algorithm again, soon... go over proofs. try to imitate or smth...
+smallest'' :: Ord a => Int -> ([a], [a]) -> a
+smallest'' k (xa, ya) = search'' k (0, m) (0, n) (V.fromList xa, V.fromList ya)
                        where
-                         m = V.length xa
-                         n = V.length ya
+                         m = length xa
+                         n = length ya

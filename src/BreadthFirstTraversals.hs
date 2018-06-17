@@ -12,6 +12,8 @@ data Tree a = Node {
 
 type Forest a = [Tree a]
 
+type Callback a = [Forest a] -> [a]
+
 ex1 = [Node 1 [
         Node 2 [Node 5 [], Node 6 []],
         Node 3 [Node 7 [], Node 8 []],

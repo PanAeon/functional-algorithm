@@ -51,14 +51,13 @@ f' (Node x rest) prevs = x : (bf (prevs ++ rest))
 -- ok, more efficient list appends
 
 bf' :: Forest a -> [a]
-bf' [] = []
-bf' (x:xs) = zf x xs []
+bf' (x:xs) = undefined
 
 zf :: Tree a -> Forest a -> ([a] -> [a])
 zf (Node x xs) conts = \prev -> x: (bf' $ conts ++ xs)
 
-b' :: Forest a -> ([a] -> [a])
-b' = undefined
+-- b' :: Forest a -> ([a] -> [a])
+-- b' = undefined
 
 
 
@@ -77,7 +76,7 @@ breadthFirst :: Forest a -> [a]
 breadthFirst ts = foldr f b ts []
   where
     f :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
-    f (Node x xs) fw = \rest -> x : fw (xs : rest)
+    f (Node x xs) fw = \prev -> x : fw (xs : prev)
 
     b :: [Forest a] -> [a]
     b [] = []

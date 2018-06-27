@@ -41,35 +41,45 @@ bf (x:xs) =  f' x xs -- replace with fold?
 -- bf' qs = foldr (\x r -> f' x) [] qs
 
 f' :: Tree a -> Forest a -> [a]
-f' (Node x xs) conts = x : (bf (conts ++ xs))
+f' (Node x rest) prevs = x : (bf (prevs ++ rest))
+
+{-
+
+-}
 
 ------------------------------------------------------
 -- ok, more efficient list appends
 
 bf' :: Forest a -> [a]
-bf' = undefined
+bf' [] = []
+bf' (x:xs) = zf x xs []
 
 zf :: Tree a -> Forest a -> ([a] -> [a])
-zf (Node x xs) conts = \prev -> undefined
+zf (Node x xs) conts = \prev -> x: (bf' $ conts ++ xs)
+
+b' :: Forest a -> ([a] -> [a])
+b' = undefined
 
 
 
 
+-- foldr :: (a -> b -> b) -> b -> t a -> b
+-- f :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
+-- (foldr f) :: ([Forest a] -> [a]) -> t (Tree a) -> [Forest a] -> [a]
+
+{- execution∷
 
 
-
-
-
-
-
-
+-}
 
 -- FIXME: reimplement
 breadthFirst :: Forest a -> [a]
 breadthFirst ts = foldr f b ts []
   where
-    f (Node x xs) fw rest = x : fw (xs : rest)
+    f :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
+    f (Node x xs) fw = \rest -> x : fw (xs : rest)
 
+    b :: [Forest a] -> [a]
     b [] = []
     b qs = foldl (foldr f) b qs []
 

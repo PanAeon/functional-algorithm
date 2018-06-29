@@ -22,25 +22,25 @@ ex1 = [Node 1 [
 
 ex2 = [Node 1488 [Node 1711 []], Node 1499 []]
 
-{-
-#!/usr/bin/env bash
+n2 = Node 2 [Node 5 [], Node 6 []]
+n3 = Node 3 [Node 7 [], Node 8 []]
+n4 = Node 4 []
 
-COMMIT_MESSAGE=$(curl -s whatthecommit.com |  grep -A2 '<div id="content">' |  tail -n +2 | head -n +1 | sed 's/<p>//')
-git commit -m "$COMMIT_MESSAGE"
+{-
 
 
 -}
 
 -- FIXME: rewrite with cont/zippers?
 breadthFirst' :: Forest a -> Forest a -> [a]
-breadthFirst' fs z = (foldr f z0 fs) [z]
+breadthFirst' fs z = (foldr f b fs) [z]
 
 f :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
 f (Node x xs) cont = \fsts -> x : (cont (xs : fsts) )
 
-z0:: [Forest a] -> [a]
-z0 [] = []
-z0 qs = (foldl (foldr f) z0 qs) []
+b:: [Forest a] -> [a]
+b [] = []
+b qs = (foldl (foldr f) b qs) []
 
 
 -- ok, inefficient list appends ...
@@ -75,7 +75,7 @@ zf (Node x xs) conts = \prev -> x: (bf' $ conts ++ xs)
 
 -- foldr :: (a -> b -> b) -> b -> t a -> b
 -- f :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
--- (foldr f) :: ([Forest a] -> [a]) -> t (Tree a) -> [Forest a] -> [a]
+-- (foldr f) :: ([Forest a] -> [a]) -> t (Tree a) -> ([Forest a] -> [a])
 
 {- execution∷
 

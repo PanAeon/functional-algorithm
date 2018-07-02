@@ -41,7 +41,7 @@ executables:
 
 tests:
   functional-algorithm-test:
-    main:                Spec.hs
+    main:                Driver.hs
     source-dirs:         test
     ghc-options:
     - -threaded
@@ -49,3 +49,10 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - functional-algorithm
+    - "tasty"
+    - "tasty-discover"
+    - "tasty-hspec"
+    - "tasty-hedgehog"
+    - "hedgehog"
+    # - "tasty-smallcheck"
+    - "tasty-quickcheck"

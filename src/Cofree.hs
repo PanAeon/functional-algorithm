@@ -4,7 +4,7 @@ module Cofree
 
 -- https://iokasimov.github.io/posts/2018/05/cofree-will-tear-us-apart
 
-import Control.Comonad.Cofree (Cofree (..))
+import           Control.Comonad.Cofree (Cofree (..))
 
 type Stack = Cofree Maybe
 

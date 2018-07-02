@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module P02() where
 
-import Data.List
+import           Data.List
 
 -----------------------------------------------
 -- maximum surpaser
@@ -23,7 +23,7 @@ msc xs = maximum [scount z zs | z:zs <- tails' xs]
 
 scount z zs = length $ filter (>z) zs
 
-tails' [] = []
+tails' []     = []
 tails' (x:xs) = (x:xs) : tails xs
 
 -- FIXME: revisit some time

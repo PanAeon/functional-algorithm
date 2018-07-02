@@ -1,9 +1,9 @@
 module P04() where
 
-import Data.List
-import Data.Vector(Vector)
+import           Data.List
+import           Data.Vector (Vector)
 import qualified Data.Vector as V
-import Debug.Trace
+import           Debug.Trace
 
 _A :: Vector Int
 _A = V.fromList [0, 2, 4, 8, 12]
@@ -41,9 +41,9 @@ smallest' k (xs, []) = xs !! k
 smallest' k ([], ys) = ys !! k
 smallest' k (zs,ws) =
     case (a < b, k <= p+q) of
-      (True, True) -> smallest' k (zs, us)
-      (True, False) -> smallest' (k - p - 1) (ys, ws)
-      (False, True) -> smallest' k (xs, ws)
+      (True, True)   -> smallest' k (zs, us)
+      (True, False)  -> smallest' (k - p - 1) (ys, ws)
+      (False, True)  -> smallest' k (xs, ws)
       (False, False) -> smallest' (k - q - 1) (zs, vs)
   where
     p = (length zs) `div` 2
@@ -63,7 +63,7 @@ search'' k (lx, rx) (ly, ry) (xa,ya)
        (False, True) -> search'' k (lx, mx) (ly, ry) (xa, ya)
        (False, False) -> search'' (k - (my - ly) - 1) (lx, rx) (my+1,ry) (xa, ya)
     where
-      mx = (lx + rx) `div` 2 
+      mx = (lx + rx) `div` 2
       my = (ly + ry) `div` 2
 
 
@@ -74,9 +74,9 @@ search' k (lx, rx) (ly, ry) (xa,ya)
    | ly == ry = xa V.! k
    | otherwise =
     case (xa V.! mx < ya V.! my, k <= (mx + my)) of
-      (True, True) -> search' k (lx, rx) (ly, my) (xa,ya)
-      (True, False) -> search' (k - mx - 1) (mx, rx) (ly, ry) (xa,ya)
-      (False, True) -> search' k (lx, mx) (ly, ry) (xa,ya)
+      (True, True)   -> search' k (lx, rx) (ly, my) (xa,ya)
+      (True, False)  -> search' (k - mx - 1) (mx, rx) (ly, ry) (xa,ya)
+      (False, True)  -> search' k (lx, mx) (ly, ry) (xa,ya)
       (False, False) -> search' (k - my - 1) (lx, rx) (my, ry) (xa,ya)
     where
       mx = (lx + rx) `div` 2

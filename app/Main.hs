@@ -3,7 +3,7 @@ module Main where
 
 
 data Tree a = Node {
-    root :: a
+    root   :: a
   , forest :: Forest a
 }
 

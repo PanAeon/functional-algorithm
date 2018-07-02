@@ -1,7 +1,7 @@
 module P01() where
 
-import Data.List
-import Data.Vector(Vector)
+import           Data.List
+import           Data.Vector (Vector)
 import qualified Data.Vector as V
 
 quicksort :: Ord a => [a] -> [a]

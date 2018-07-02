@@ -1,6 +1,6 @@
 module P03() where
 
-import Debug.Trace
+import           Debug.Trace
 -- improving on saddleback search
 
 -- f :: (Int,Int) => Int

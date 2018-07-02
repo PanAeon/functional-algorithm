@@ -22,6 +22,12 @@ ex1 = [Node 1 [
 
 ex2 = [Node 1488 [Node 1711 []], Node 1499 []]
 
+ex3 = Node 1 [
+        Node 2 [Node 5 [], Node 6 []],
+        Node 3 [Node 7 [], Node 8 []],
+        Node 4 []
+      ]
+
 n2 = Node 2 [Node 5 [], Node 6 []]
 n3 = Node 3 [Node 7 [], Node 8 []]
 n4 = Node 4 []
@@ -32,8 +38,8 @@ n4 = Node 4 []
 -}
 
 -- FIXME: rewrite with cont/zippers?
-breadthFirst' :: Forest a -> Forest a -> [a]
-breadthFirst' fs z = (foldr f b fs) [z]
+breadthFirst'' :: Forest a -> Forest a -> [a]
+breadthFirst'' fs z = (foldr f b fs) [z]
 
 f :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
 f (Node x xs) cont = \fsts -> x : (cont (xs : fsts) )
@@ -47,12 +53,12 @@ b qs = (foldl (foldr f) b qs) []
 
 bf :: Forest a -> [a]
 bf [] = []
-bf (x:xs) =  f' x xs -- replace with fold?
+bf (x:xs) =  f'' x xs -- replace with fold?
 
 -- bf' qs = foldr (\x r -> f' x) [] qs
 
-f' :: Tree a -> Forest a -> [a]
-f' (Node x rest) prevs = x : (bf (prevs ++ rest))
+f'' :: Tree a -> Forest a -> [a]
+f'' (Node x rest) prevs = x : (bf (prevs ++ rest))
 
 {-
 
@@ -61,15 +67,22 @@ f' (Node x rest) prevs = x : (bf (prevs ++ rest))
 ------------------------------------------------------
 -- ok, more efficient list appends
 
-bf' :: Forest a -> [a]
-bf' (x:xs) = undefined
+breadthFirst' :: Forest a -> [a]
+breadthFirst' xs = foldr f' b' xs []
 
-zf :: Tree a -> Forest a -> ([a] -> [a])
-zf (Node x xs) conts = \prev -> x: (bf' $ conts ++ xs)
+f' :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
+f' (Node x xs) topsCont = \zs -> x : topsCont (xs : zs)
 
--- b' :: Forest a -> ([a] -> [a])
--- b' = undefined
+-- first go over all forests, left-to-right
+-- 'top' forest is at the right
+-- ok, what is foldr f g forest
+--
+b' :: ([Forest a] -> [a])
+b' [] = []
+b' xs = foldl (\g forest -> foldr (\tree c -> f tree c) g forest) b' xs []
 
+-- _ :: ([Forest a] -> [a]) -> Forest a -> [Forest a] -> [a]
+-- you applying cotinuation
 
 
 
@@ -81,6 +94,14 @@ zf (Node x xs) conts = \prev -> x: (bf' $ conts ++ xs)
 
 
 -}
+
+
+
+
+
+
+
+
 
 -- FIXME: reimplement
 breadthFirst :: Forest a -> [a]

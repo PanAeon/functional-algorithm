@@ -6,7 +6,7 @@ import qualified Data.List as L
 
 
 data Tree a = Node {
-    root :: a
+    root   :: a
   , forest :: Forest a
 }
 
@@ -52,7 +52,7 @@ b qs = (foldl (foldr f) b qs) []
 -- ok, inefficient list appends ...
 
 bf :: Forest a -> [a]
-bf [] = []
+bf []     = []
 bf (x:xs) =  f'' x xs -- replace with fold?
 
 -- bf' qs = foldr (\x r -> f' x) [] qs
@@ -71,7 +71,7 @@ breadthFirst' :: Forest a -> [a]
 breadthFirst' xs = foldr f' b' xs []
 
 f' :: Tree a -> ([Forest a] -> [a]) -> ([Forest a] -> [a])
-f' (Node x xs) topsCont = \zs -> x : topsCont (xs : zs)
+f' (Node x children) topsCont = \siblings -> x : topsCont (children : siblings)
 
 -- first go over all forests, left-to-right
 -- 'top' forest is at the right

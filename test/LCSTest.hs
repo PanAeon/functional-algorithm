@@ -18,3 +18,6 @@ spec_lcsPlain =
   it "should satisfy second example" $ do
     let (xs, ys) = ("AGGTAB", "GXTXAYB")
     lcsPlain xs ys `shouldBe` "GTAB"
+  it "should satisfy reverse second example" $ do
+   let (xs, ys) = ("GXTXAYB", "AGGTAB")
+   lcsPlain xs ys `shouldBe` "GTAB"

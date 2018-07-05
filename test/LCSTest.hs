@@ -1,7 +1,11 @@
 module LCSTest where
 
+-- import qualified Hedgehog         as H
+-- import qualified Hedgehog.Gen     as Gen
+-- import qualified Hedgehog.Range   as Range
 import           LCS
 import           Test.Tasty.Hspec
+import           Test.Tasty.QuickCheck
 
 
 
@@ -47,3 +51,22 @@ spec_lcs = do
     it "should satisfy reverse second example" $ do
      let (xs, ys) = ("GXTXAYB", "AGGTAB")
      lcsCached xs ys `shouldBe` "GTAB"
+
+
+-- hprop_reverse :: H.Property
+-- hprop_reverse = H.property $ do
+--   xs <- H.forAll $ Gen.list (Range.linear 0 100) Gen.alpha
+--   reverse (reverse xs) H.=== xs
+
+-- prop_lcsCachedBehavesLikeLcsSlow :: Int -> Int -> Bool
+prop_lcsCachedBehavesLikeLcsSlow = forAll (twoSizedLists) $ \z -> case z of
+     (xs, ys) -> length (lcsCached xs ys) == length (lcsSlow xs ys)
+
+prop_lcsPlainBehavesLikeLcsSlow = forAll (twoSizedLists) $ \z -> case z of
+     (xs, ys) -> length (lcsPlain xs ys) == length (lcsSlow xs ys)
+
+sizedList = resize 6 (listOf (choose (0::Int, 10)))
+twoSizedLists = do
+                      xs <- sizedList
+                      ys <- sizedList
+                      pure (xs,ys)

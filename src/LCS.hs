@@ -5,13 +5,13 @@ module LCS
     ) where
 
 import           Data.List
-import           Data.Vector(Vector)
-import   qualified Data.Vector as V
-import Debug.Trace
+import           Data.Vector (Vector)
+import qualified Data.Vector as V
+import           Debug.Trace
 
 -- Write bloody test or whatever
 
--- FIXME: use pomodoro, set fucking goals
+
 -- FIXME: add bloody 0 to hoogle-authenticator!
 -- FIXME: verify normally, I'm not sure below is correct, although looks so
 lcsPlain :: Ord a => [a] -> [a] -> [a]
@@ -27,6 +27,7 @@ max' xs ys = if length xs > length ys then xs else ys --hmm, length should be ca
       -- do
       --   tx <- tails xs
       --   ty <- tails ys
+
 lcsSlow :: Ord a => [a] -> [a] -> [a]
 lcsSlow [] ys = []
 lcsSlow xs [] = []
@@ -35,51 +36,37 @@ lcsSlow (x:xs) (y:ys)
   | otherwise = max' (lcsSlow (x:xs) ys) (lcsSlow xs (y:ys))
 --------------------------------------------------------------------------------
 
--- FIXME: lcsCached "GXTXAB" "GGTAB"
--- lcsCached :: Ord a => [a] -> [a] -> [a]
-lcsCached xs ys = if (fst . V.head . fst) res > (fst . V.head . snd ) res
-                  then (snd . V.head . fst) res
-                  else (snd . V.head . snd) res
+
+lcsCached :: Ord a => [a] -> [a] -> [a]
+lcsCached xs ys = snd $ V.head $ if m > n then rys else rxs
   where
     n = length xs
     m = length ys
-    n' = min n m
-    -- xsr = reverse xs
-    -- ysr = reverse ys
     xv = V.fromList xs
     yv = V.fromList ys
     (xs0, ys0) = (V.replicate (n+1) (0,[]), V.replicate (m+1) (0,[]))
-    res = foldl f (xs0, ys0) [1..n']
-    f (row,col) i = traceShowId $ (V.fromList $ row', V.fromList $  col')
+    (rxs, rys) = foldl f (xs0, ys0) [1..min n m]
+    f (row,col) i = (V.fromList $ row', V.fromList $  col')
       where
         xidx = n - i
         yidx = m - i
         xi = xv V.! xidx
         yi = yv V.! yidx
-        -- FIXME: refactor this shit, and check this fucking reverse
-        row' = tail $ reverse $  scanr fx (col V.! yidx) [0 .. xidx]
 
-        col' = init $ scanr fy (row V.! xidx) [0 .. yidx]
+        row' = init $ scanr (fx xv yi row) (col V.! yidx) [0 .. xidx]
+        col' = init $ scanr (fx yv xi col) (row V.! xidx) [0 .. yidx]
 
-        fx l right =
+        fx ts t0 prevV l right =
           let
-            bottomRight = row V.! (l + 1)
-            bottom = row V.! l
-          in if xv V.! l == yi
-                 then (1 + fst bottomRight, yi : (snd bottomRight))
+            bottomRight = prevV V.! (l + 1)
+            bottom = prevV V.! l
+          in if ts V.! l == t0
+                 then (1 + fst bottomRight, t0 : (snd bottomRight))
                  else if fst right > fst bottom
                       then right
                       else bottom
 
-        fy l bottom =
-          let
-            bottomRight = col V.! (l + 1)
-            right = col V.! l
-          in if yv V.! l == xi
-                 then (1 + fst bottomRight, xi : (snd bottomRight))
-                 else if fst bottom > fst right
-                      then bottom
-                      else right
+
 
 
 
